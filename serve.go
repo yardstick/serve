@@ -1,28 +1,37 @@
 package main
 
 import (
-    "flag"
-    "fmt"
-    "log"
-    "net/http"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
 )
 
 var (
-    dir  string
-    port int
+	dir    string
+	prefix string
+	port   int
 )
 
 func init() {
-    flag.StringVar(&dir, "dir", ".", "the directory to serve")
-    flag.IntVar(&port, "port", 8080, "the port to serve on")
-    flag.Parse()
+	flag.StringVar(&dir, "dir", ".", "the directory to serve")
+	flag.StringVar(&prefix, "prefix", "", "strip this prefix")
+	flag.IntVar(&port, "port", 8080, "the port to serve on")
+	flag.Parse()
 }
 
 func main() {
-    spec := fmt.Sprintf("0.0.0.0:%d", port)
-    log.Printf("Serving %s on %s", dir, spec)
-    err := http.ListenAndServe(spec, http.FileServer(http.Dir(dir)))
-    if err != nil {
-        log.Fatalf("failed serving: %s", err)
-    }
+	spec := fmt.Sprintf("0.0.0.0:%d", port)
+	logger := log.New(os.Stdout, "[serve] ", log.LstdFlags)
+	logger.Printf("Serving %s on %s", dir, spec)
+	handler := http.FileServer(http.Dir(dir))
+	if prefix != "" {
+		handler = http.StripPrefix(prefix, handler)
+	}
+	handler = LoggerHandler{handler, logger}
+	err := http.ListenAndServe(spec, handler)
+	if err != nil {
+		log.Fatalf("failed serving: %s", err)
+	}
 }
