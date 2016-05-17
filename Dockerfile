@@ -7,4 +7,3 @@ RUN mkdir /html
 WORKDIR /html
 
 ENTRYPOINT ["serve"]
-CMD ["-port", "80"]
