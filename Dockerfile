@@ -1,9 +1,11 @@
 FROM alpine
-MAINTAINER Daniel Huckstep <darkhelmet@darkhelmetlive.com>
+MAINTAINER Daniel Huckstep <danielh@getyardstick.com>
 
 ADD serve /bin/
 
-RUN mkdir /html
-WORKDIR /html
+RUN mkdir /webroot
+WORKDIR /webroot
+
+EXPOSE 80
 
 ENTRYPOINT ["serve"]
