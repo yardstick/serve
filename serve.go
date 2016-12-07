@@ -34,6 +34,13 @@ func (fs justFilesFilesystem) Open(name string) (http.File, error) {
 	}
 	stat, _ := f.Stat()
 	if stat.IsDir() {
+		index, err := fs.Fs.Open(fmt.Sprintf("%s/index.html", name))
+		if err == nil {
+			// If they hit a directory which contains an index.html file,
+			// it's all good.
+			index.Close()
+			return f, err
+		}
 		return nil, os.ErrNotExist
 	}
 	return f, nil
