@@ -19,7 +19,7 @@ func init() {
 	flag.StringVar(&dir, "dir", ".", "the directory to serve (/webroot)")
 	flag.StringVar(&prefix, "prefix", "", "strip this prefix")
 	flag.IntVar(&port, "port", 80, "the port to serve on")
-	flag.BoolVar(&allowDirListing, "allow-directory-listing (default: false)", false, "whether to allow directory listing")
+	flag.BoolVar(&allowDirListing, "allow-directory-listing", false, "whether to allow directory listing")
 	flag.Parse()
 }
 
